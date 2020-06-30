@@ -22,14 +22,14 @@ function schedularCallBack(requestId,data,callback) {
     //     console.log('error in schedular', e.message);
     // });
 }
-function getPendingMessages(uuid) {
+function getPendingMessages(uuid,key) {
     var entities,intent;
     try {
         return sdk.getSavedData(uuid).then(function (_data) {
             entities = _data.context.entities;
             intent=_data.context.intent
             console.log("RTM entities : ", entities);
-            sdk.getSavedData("msteams_" +"data").then(function (__data) {
+            sdk.getSavedData(key).then(function (__data) {
                 __data.context.session.BotUserSession['PreEntities']=entities;
                 __data.message = intent//"Reset Password "//+Object.values(entities).join(" ").trim();
                 console.log("1 : ", __data.message);
@@ -50,6 +50,15 @@ function getPendingMessages(uuid) {
     }
 }
 
+function checkPreviousData()
+{
+    if((emailId in previousData)==false)
+    {
+            previousData[emailId]={"previousChannel":"",previousKey:""}
+    }
+}
+
+
 module.exports = {
     botId: botId,
     botName: botName,
@@ -61,13 +70,14 @@ module.exports = {
         {
             emailId=data.context.session.UserContext.emailId||data.context.session.UserContext.identities[0].val
             console.log("In rtm: ",emailId)
+            checkPreviousData(emailId)
             if (channelType ==="rtm"){ //"msteams") {
             //if (data.message === "save") {
             if(data.channel.handle.type=="welcome"){
                return sdk.saveChannelData(channelType + "_"+emailId, data).then(function () {
                     console.log("Saved the data");
                     data.message = "Saved the data to redis...";
-                    schedule = schedular.scheduleJob('* * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
+                    schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
                     // return sdk.sendUserMessage(data)
                     return sdk.sendBotMessage(data,callback)
                 })
@@ -78,10 +88,21 @@ module.exports = {
         }
         if(channelType=="email")
         {
-            var s=data.context.session.UserContext.identities[0].val.split("/")[1]
-            var w=data.channel.from.split("/")[1]
+            // var s=data.context.session.UserContext.identities[0].val.split("/")[1]
+            // var w=data.channel.from.split("/")[1]
             emailId=data.context.session.UserContext.identities[0].val.split("/")[1]||data.channel.from.split("/")[1]
             console.log("In email: ", emailId)
+            checkPreviousData(emailId)
+            if(data.message==="save")
+            {
+                return sdk.saveChannelData(channelType+"_"+emailId,data).then(function(){
+                    console.log("Saved data of email channel")
+                    data.message="Saved data of email channel in redis"
+                    schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
+                    // return sdk.sendUserMessage(data)
+                    return sdk.sendBotMessage(data,callback)
+                })   
+            }
         }
         if((emailId in previousData)==false)
         {
@@ -117,15 +138,15 @@ module.exports = {
                 // sdk.extendRequestId(requestId)
                 // console.log("Triggering the schedular")
                 // schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
-                getPendingMessages(previousData[emailId]["previousKey"])
+                getPendingMessages(previousData[emailId]["previousKey"],key)
                 //return sdk.skipBotMessage(data,callback);
             }
             
         }
         previousData[emailId]={"previousChannel":channelType,"previousKey":key}
-        // console.log(data.channel.handle.type)
-        previousChannel[emailId]=channelType
-        previousKey=key
+        console.log(previousData)
+        // previousChannel[emailId]=channelType
+        // previousKey=key
         return sdk.sendUserMessage(data, callback);
     },
     on_agent_transfer: function (requestId, data, callback) {
@@ -133,7 +154,7 @@ module.exports = {
     },
     on_event: function (requestId, data, callback) {
         console.log("on_event -->  Event : ", data.event);
-        return sdk.sendAlertMessage(data,callback)//callback(null, data);
+        return callback(null, data);
     },
     on_alert: function (requestId, data, callback) {
         console.log("on_alert -->  : ", data, data.message);
