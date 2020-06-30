@@ -1,0 +1,34 @@
+{
+    "server": {
+        "port": 8004
+    },
+    "app": {
+        "apiPrefix": "",
+        "url": "https://b39d91d1bdd3.ngrok.io"
+    },
+    "botName": "For Welcome Event",
+    "credentials": {
+        "apikey": "Y1qKWZQx06wrRZO+xK1IhYCizUzvrW0SJ4Bosb3KsWM=",
+        "appId": "cs-73b4f481-1234-5419-9596-656ddb6113e7",
+        "st-b20f6da8-11be-509a-ae18-fbcf35119c79": {
+            "apikey": "Y1qKWZQx06wrRZO+xK1IhYCizUzvrW0SJ4Bosb3KsWM=",
+            "appId": "cs-73b4f481-1234-5419-9596-656ddb6113e7"
+        }
+    },
+    "redis": {
+        "options": {
+            "host": "localhost",
+            "port": 6379
+        },
+        "available": true
+    },
+    "examples": {
+        "mockServicesHost": "http://localhost:8004"
+    },
+    "liveagentlicense": "8947569",
+    "supportsMessageAck": true,
+    "languages": [
+        "en",
+        "de"
+    ]
+}
