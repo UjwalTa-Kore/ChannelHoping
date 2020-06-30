@@ -4,15 +4,15 @@
     },
     "app": {
         "apiPrefix": "",
-        "url": "https://d220bd25d714.ngrok.io"
+        "url": "https://3cae58d5ba50.ngrok.io"
     },
-    "botName": "For Welcome Event",
+    "botName": "ForMsTeamChannel",
     "credentials": {
-        "apikey": "Y1qKWZQx06wrRZO+xK1IhYCizUzvrW0SJ4Bosb3KsWM=",
-        "appId": "cs-73b4f481-1234-5419-9596-656ddb6113e7",
-        "st-b20f6da8-11be-509a-ae18-fbcf35119c79": {
-            "apikey": "Y1qKWZQx06wrRZO+xK1IhYCizUzvrW0SJ4Bosb3KsWM=",
-            "appId": "cs-73b4f481-1234-5419-9596-656ddb6113e7"
+        "apikey": "Wye5CXRU6YqNHLHiqZ2agSzIT0JjMRNT/eoj5yjsrJM=",
+        "appId": "cs-29e34e2f-f343-5940-bd07-853f2dd94dd4",
+        "st-4bae7926-36f1-52f0-a5cd-11c83129a0a0": {
+            "apikey": "Wye5CXRU6YqNHLHiqZ2agSzIT0JjMRNT/eoj5yjsrJM=",
+            "appId": "cs-29e34e2f-f343-5940-bd07-853f2dd94dd4"
         }
     },
     "redis": {

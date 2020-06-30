@@ -70,18 +70,28 @@ module.exports = {
         {
             emailId=data.context.session.UserContext.emailId||data.context.session.UserContext.identities[0].val
             console.log("In rtm: ",emailId)
-            checkPreviousData(emailId)
+            //checkPreviousData(emailId)
             if (channelType ==="rtm"){ //"msteams") {
             //if (data.message === "save") {
-            if(data.channel.handle.type=="welcome"){
+            if(data.channel.handle.type=="welcome"||data.message=="save"){
                return sdk.saveChannelData(channelType + "_"+emailId, data).then(function () {
                     console.log("Saved the data");
-                    data.message = "Saved the data to redis...";
+                    //data.message = "Saved the data to redis...";
                     schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
+                    if((emailId in previousData)==false)
+                    {
+                        data.message="Saved the data to redis.."
+                        return sdk.sendUserMessage(data)
+                    }
+                    else{
+                        checkPreviousData(emailId)
+                        return sdk.sendBotMessage(data,callback)
+                    }
                     // return sdk.sendUserMessage(data)
-                    return sdk.sendBotMessage(data,callback)
+                    // return sdk.sendBotMessage(data,callback)
                 })
             } else {
+                checkPreviousData(emailId)
                 return sdk.sendBotMessage(data, callback);
             }
         }
@@ -92,16 +102,28 @@ module.exports = {
             // var w=data.channel.from.split("/")[1]
             emailId=data.context.session.UserContext.identities[0].val.split("/")[1]||data.channel.from.split("/")[1]
             console.log("In email: ", emailId)
-            checkPreviousData(emailId)
             if(data.message==="save")
             {
                 return sdk.saveChannelData(channelType+"_"+emailId,data).then(function(){
                     console.log("Saved data of email channel")
-                    data.message="Saved data of email channel in redis"
+                    //data.message="Saved data of email channel in redis"
                     schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
-                    // return sdk.sendUserMessage(data)
-                    return sdk.sendBotMessage(data,callback)
+                    if((emailId in previousData)==false)
+                    {
+                        data.message="Saved the data to redis.."
+                        return sdk.sendUserMessage(data)
+                    }
+                    else{
+                        checkPreviousData(emailId)
+                        return sdk.sendBotMessage(data,callback)
+                    }
+                    // return sdk.sendUserMessage(data)//So that it sends msg to bot
+                    return sdk.sendBotMessage(data,callback)// For second channel to go to Pending Function
                 })   
+            }
+            else{
+                checkPreviousData(emailId)
+                return sdk.sendBotMessage(data,callback)
             }
         }
         if((emailId in previousData)==false)
@@ -151,6 +173,7 @@ module.exports = {
     },
     on_agent_transfer: function (requestId, data, callback) {
         return callback(null, data);
+
     },
     on_event: function (requestId, data, callback) {
         console.log("on_event -->  Event : ", data.event);
