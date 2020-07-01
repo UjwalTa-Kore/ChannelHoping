@@ -78,18 +78,19 @@ module.exports = {
                     console.log("Saved the data");
                     //data.message = "Saved the data to redis...";
                     schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
-                    if((emailId in previousData)==false)
-                    {
+                    // if((emailId in previousData)==false)
+                    // {
                         data.message="Saved the data to redis.."
                         return sdk.sendUserMessage(data)
-                    }
-                    else{
-                        checkPreviousData(emailId)
-                        return sdk.sendBotMessage(data,callback)
-                    }
-                    // return sdk.sendUserMessage(data)
-                    // return sdk.sendBotMessage(data,callback)
+                    // }
                 })
+                //     else{
+                //         checkPreviousData(emailId)
+                //         return sdk.sendBotMessage(data,callback)
+                //     }
+                //     // return sdk.sendUserMessage(data)
+                //     // return sdk.sendBotMessage(data,callback)
+                // })
             } else {
                 checkPreviousData(emailId)
                 return sdk.sendBotMessage(data, callback);
@@ -108,15 +109,15 @@ module.exports = {
                     console.log("Saved data of email channel")
                     //data.message="Saved data of email channel in redis"
                     schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
-                    if((emailId in previousData)==false)
-                    {
-                        data.message="Saved the data to redis.."
+                    // if((emailId in previousData)==false)
+                    // {
+                        data.message="Saved the data to redis with schedular"
                         return sdk.sendUserMessage(data)
-                    }
-                    else{
-                        checkPreviousData(emailId)
-                        return sdk.sendBotMessage(data,callback)
-                    }
+                    // }
+                    // else{
+                    //     checkPreviousData(emailId)
+                    //     return sdk.sendBotMessage(data,callback)
+                    // }
                     // return sdk.sendUserMessage(data)//So that it sends msg to bot
                     return sdk.sendBotMessage(data,callback)// For second channel to go to Pending Function
                 })   
@@ -128,7 +129,7 @@ module.exports = {
         }
         if((emailId in previousData)==false)
         {
-                previousData[emailId]={"previousChannel":"",previousKey:""}
+                previousData[emailId]={"previousChannel":"","previousKey":""}
         }
         if(channelType.indexOf(channels)===-1||channels.length==0)
         {
@@ -159,7 +160,7 @@ module.exports = {
                 if(previousData[emailId]["previousChannel"]!=channelType&&previousData[emailId]["previousChannel"]!=""){
                 // sdk.extendRequestId(requestId)
                 // console.log("Triggering the schedular")
-                // schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
+                schedule = schedular.scheduleJob('10 * * * * *', ()=>{schedularCallBack(requestId,data,callback)});
                 getPendingMessages(previousData[emailId]["previousKey"],key)
                 //return sdk.skipBotMessage(data,callback);
             }
