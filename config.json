@@ -1,10 +1,10 @@
 {
     "server": {
-        "port": 8004
+        "port": 8005
     },
     "app": {
         "apiPrefix": "",
-        "url": "https://e04de1c6ae48.ngrok.io"
+        "url": "https://4b882de00683.ngrok.io"
     },
     "botName": "ForMsTeamChannel",
     "credentials": {
